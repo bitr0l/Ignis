@@ -55,6 +55,20 @@ struct memory_map {
 };
 
 /*
+ * Obtain the platform memory map.
+ *
+ * @map: Result is written here
+ *
+ * Return value:
+ *     Returns STATUS_SUCCESS if successful.
+ *     Returns error code on failure.
+ */
+status_t
+get_memory_map (
+    __out struct memory_map *map
+    );
+
+/*
  * Configure the platform watchdog timer.
  *
  * @timeout:    Number of seconds to set timer to
