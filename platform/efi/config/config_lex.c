@@ -56,6 +56,25 @@ lexer_is_alpha (
 }
 
 /*
+ * Place a byte into the lexer putback buffer
+ *
+ * @state:   Lexer state
+ * @c:       Character to put back
+ */
+static inline void
+lexer_putback (
+    __in struct config_lexer_state *state,
+    __in char c
+    )
+{
+    if (state == NULL) {
+        return;
+    }
+
+    state->putback = c;
+}
+
+/*
  * Consume a single byte from within the config
  *
  * @state:   Lexer state
@@ -75,6 +94,13 @@ lexer_consume_byte (
 
     if (state == NULL) {
         return '\0';
+    }
+
+    if ((c = state->putback) != '\0') {
+        state->putback = '\0';
+        if ((lexer_is_ws(c) && !skip_ws) || !lexer_is_ws(c)) {
+            return c;
+        }
     }
 
     while (state->buf_index < state->buf_max_size) {
@@ -119,6 +145,7 @@ lexer_scan_ident (
         /* Consume and test */
         c = lexer_consume_byte(state, false);
         if (!lexer_is_alpha(c)) {
+            lexer_putback(state, c);
             break;
         }
 
@@ -198,6 +225,7 @@ config_lexer_init (
     lexer->config_buf = config_buf;
     lexer->buf_index = 0;
     lexer->buf_max_size = config_buf_size;
+    lexer->putback = '\0';
     return STATUS_SUCCESS;
 }
 

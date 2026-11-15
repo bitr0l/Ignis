@@ -54,11 +54,13 @@ struct config_token {
  * @config_buf:     Buffer containing config file contents
  * @buf_max_size:   Maximum size of buffer
  * @buf_index:      Index into @config_buf
+ * @putback:        Putback buffer
  */
 struct config_lexer_state {
     const char *config_buf;
     size_t buf_max_size;
     size_t buf_index;
+    char putback;
 };
 
 /*
