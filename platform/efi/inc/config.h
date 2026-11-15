@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <sys/status.h>
 #include <sys/comdef.h>
+#include <wchar.h>
 
 /* Maximum length of menu entry name */
 #define CONFIG_MENU_ENTRY_LEN 32
@@ -35,7 +36,7 @@ typedef enum {
  * @protocol:   Protocol to be used for entry
  */
 struct config_menu_entry {
-    char name[CONFIG_MENU_ENTRY_LEN];
+    wchar_t name[CONFIG_MENU_ENTRY_LEN];
     config_protocol_t protocol;
 };
 
