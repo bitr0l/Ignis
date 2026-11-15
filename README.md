@@ -3,6 +3,8 @@
 Ignis is a modern and minimalistic bootloader targeting UEFI platforms and
 made for loading flat binaries and eventually the Linux kernel.
 
+Documentation regarding the config file format can be seen [here](./doc/CONFIG.md).
+
 ## Build instructions
 
 To build Ignis, simply run ``./build.sh`` and install any dependencies if requested.
