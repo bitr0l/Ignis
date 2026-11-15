@@ -11,6 +11,7 @@ ipl_main (
     void
     )
 {
+    EFI_FILE_HANDLE boot_volume;
     status_t status;
 
     /*
@@ -34,5 +35,15 @@ ipl_main (
 
     if (!SYS_SUCCESS(status)) {
         cons_printf(DOTS L"warning: Could not disable watchdog, continuing...\r\n");
+    }
+
+    /*
+     * Obtain the boot volume.
+     */
+
+    status = get_boot_volume(&boot_volume);
+    if (!SYS_SUCCESS(status)) {
+        cons_printf(DOTS L"fatal: Unable to obtain boot volume\r\n");
+        return;
     }
 }
