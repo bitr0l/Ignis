@@ -5,7 +5,7 @@
  */
 
 #include <sys/comdef.h>
-#include <efi/efi.h>
+#include <efilib.h>
 
 EFIAPI
 EFI_STATUS
@@ -14,6 +14,17 @@ efi_main (
     __in EFI_SYSTEM_TABLE *systab
     )
 {
+    status_t status;
+
+    /*
+     * Initialize the global firmware interface.
+     */
+
+    status = efi_firmware_init(image_handle, systab);
+    if (!SYS_SUCCESS(status)) {
+        return EFI_INVALID_PARAMETER;
+    }
+
     /* Abort if this point is reached */
     return EFI_ABORTED;
 }
