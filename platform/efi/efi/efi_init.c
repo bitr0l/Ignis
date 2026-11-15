@@ -25,6 +25,16 @@ efi_main (
         return EFI_INVALID_PARAMETER;
     }
 
+    /*
+     * Reset the output console with no extended verification.
+     * Doesn't matter if it fails as it isn't too important...
+     */
+
+    g_cons->Reset(
+        g_cons,
+        FALSE
+    );
+
     /* Abort if this point is reached */
     return EFI_ABORTED;
 }
