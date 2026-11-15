@@ -101,6 +101,7 @@ vswprintf_s (
 {
     wchar_t *dest;
     size_t total, len;
+    wchar_t wc[2];
 
     if (buf == NULL || bufsz == 0 || format == NULL) {
         return -1;
@@ -137,6 +138,14 @@ vswprintf_s (
             break;
         case L's':
             len = print_str(dest, bufsz - total, va_arg(args, const wchar_t *));
+            dest += len;
+            total += len;
+            format++;
+            break;
+        case L'c':
+            wc[0] = (wchar_t)(uint8_t)va_arg(args, unsigned int);
+            wc[1] = '\0';
+            len = print_str(dest, 2, wc);
             dest += len;
             total += len;
             format++;
