@@ -14,6 +14,9 @@
 /* Maximum length of menu entry name */
 #define CONFIG_MENU_ENTRY_LEN 32
 
+/* Maximum number of boot entries */
+#define CONFIG_MENU_MAX_ENTRIES 8
+
 /*
  * Represents valid protocols.
  *
@@ -43,7 +46,7 @@ struct config_menu_entry {
  * @nr_entries:     Number of entries present
  */
 struct config_boot_table {
-    struct config_menu_entry *entries;
+    struct config_menu_entry entries[CONFIG_MENU_MAX_ENTRIES];
     size_t nr_entries;
 };
 

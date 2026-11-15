@@ -8,6 +8,10 @@ described in the "Menu Entry Metadata" section.
 
 An example of the configuration format can be found in ``test/ignis.cfg``
 
+## Limitations
+
+We currently only support a maximum number of 8 boot entries.
+
 ## Menu Entry Metadata
 
 Valid keys are described below:
