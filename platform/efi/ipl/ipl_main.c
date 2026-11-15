@@ -12,7 +12,9 @@ ipl_main (
     )
 {
     EFI_FILE_HANDLE boot_volume;
+    struct config_menu_entry *menu_entry;
     struct config_boot_table boot_tab;
+    size_t index;
     status_t status;
 
     /*
@@ -58,5 +60,16 @@ ipl_main (
     status = loader_configure(boot_volume, &boot_tab);
     if (status != STATUS_SUCCESS) {
         return;
+    }
+
+    for (index = 0; index < boot_tab.nr_entries; ++index) {
+        menu_entry = &boot_tab.entries[index];
+
+        cons_printf(
+            DOTS L"MENU ENTRY(%s) : [proto '%s', kernel '%s']\r\n",
+            menu_entry->name,
+            menu_entry->protocol,
+            menu_entry->kernel
+        );
     }
 }
