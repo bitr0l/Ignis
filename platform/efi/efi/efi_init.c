@@ -6,6 +6,7 @@
 
 #include <sys/comdef.h>
 #include <efilib.h>
+#include <bootlib.h>
 
 EFIAPI
 EFI_STATUS
@@ -35,6 +36,10 @@ efi_main (
         FALSE
     );
 
-    /* Abort if this point is reached */
+    /*
+     * Enter initial program load phase and abort if it returns.
+     */
+
+    ipl_main();
     return EFI_ABORTED;
 }
