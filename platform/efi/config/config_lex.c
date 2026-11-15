@@ -17,7 +17,7 @@
  *      Returns true if the given character is a whitespace.
  *      Returns false if the given character is not a whitespace.
  */
-static bool
+static inline bool
 lexer_is_ws (
     __in char c
     )
