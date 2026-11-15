@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <sys/status.h>
 #include <sys/comdef.h>
+#include <efilib.h>
 #include <wchar.h>
 
 /*
@@ -53,6 +54,67 @@ struct memory_map {
     uint64_t entry_count;
     uint64_t key;
 };
+
+/*
+ * Represents an opened file.
+ *
+ * @handle:         EFI file handle interface
+ * @size_bytes:     Size of file in bytes
+ */
+struct file_descriptor {
+    EFI_FILE_HANDLE handle;
+    uint64_t size_bytes;
+};
+
+/*
+ * Read the contents of a file into the specified buffer.
+ *
+ * @descriptor:  Descriptor of file to read
+ * @buf_size:    Number of bytes to read
+ * @buffer:      Destination buffer.
+ *
+ * Return value:
+ *     Returns STATUS_SUCCESS if successful.
+ *     Returns error code on failure.
+ */
+status_t
+read_file (
+    __in struct file_descriptor *descriptor,
+    __inout uint64_t *buf_size,
+    __out void *buffer
+    );
+
+/*
+ * Open a file by path.
+ *
+ * @volume:     Volume file resides on.
+ * @file_path:  Path of file to open.
+ * @descriptor: Resulting descriptor is written here.
+ *
+ * Return value:
+ *     Returns STATUS_SUCCESS if successful.
+ *     Returns error code on failure.
+ */
+status_t
+open_file_path (
+    __in EFI_FILE_HANDLE volume,
+    __in wchar_t *file_path,
+    __out struct file_descriptor *descriptor
+    );
+
+/*
+ * Obtain the volume in which we are booting from.
+ *
+ * @volume: Result is written here
+ *
+ * Return value:
+ *     Returns STATUS_SUCCESS if successful.
+ *     Returns error code on failure.
+ */
+status_t
+get_boot_volume (
+    __out EFI_FILE_HANDLE *volume
+    );
 
 /*
  * Obtain the platform memory map.
