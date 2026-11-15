@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <sys/status.h>
 #include <sys/comdef.h>
+#include <stdbool.h>
 
 /* Maximum length of identifiers */
 #define CONFIG_MAX_IDENT_LEN 32
@@ -55,12 +56,16 @@ struct config_token {
  * @buf_max_size:   Maximum size of buffer
  * @buf_index:      Index into @config_buf
  * @putback:        Putback buffer
+ * @tputback:       Token putback
+ * @have_tput:      Is true if tputback is full
  */
 struct config_lexer_state {
     const char *config_buf;
     size_t buf_max_size;
     size_t buf_index;
     char putback;
+    struct config_token tputback;
+    bool have_tput;
 };
 
 /*
@@ -95,6 +100,22 @@ status_t
 config_lexer_scan (
     __in struct config_lexer_state *state,
     __out struct config_token *token
+    );
+
+/*
+ * Place a copy of a token into the token putback buffer.
+ *
+ * @state:  Lexer state
+ * @token:  Token to take copy of
+ *
+ * Return value:
+ *      Returns STATUS_SUCCESS on success.
+ *      Returns error code on failure.
+ */
+status_t
+config_lexer_tputback (
+    __out struct config_lexer_state *state,
+    __in struct config_token *token
     );
 
 #endif /* !_CONFIGVAR_H */

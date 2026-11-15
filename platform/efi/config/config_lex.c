@@ -226,6 +226,22 @@ config_lexer_init (
     lexer->buf_index = 0;
     lexer->buf_max_size = config_buf_size;
     lexer->putback = '\0';
+    lexer->have_tput = false;
+    return STATUS_SUCCESS;
+}
+
+status_t
+config_lexer_tputback (
+    __out struct config_lexer_state *state,
+    __in struct config_token *token
+    )
+{
+    if (state == NULL || token == NULL) {
+        return STATUS_FAILURE;
+    }
+
+    state->tputback = *token;
+    state->have_tput = true;
     return STATUS_SUCCESS;
 }
 
@@ -239,6 +255,12 @@ config_lexer_scan (
 
     if (state == NULL || token == NULL) {
         return STATUS_INVALID_PARAM;
+    }
+
+    if (state->have_tput) {
+        *token = state->tputback;
+        state->have_tput = false;
+        return STATUS_SUCCESS;
     }
 
     if ((c = lexer_consume_byte(state, true)) == '\0') {
