@@ -1,4 +1,5 @@
 /out
 /disk
+/OVMF.fd
 *.o
 *.d
