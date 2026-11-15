@@ -33,7 +33,7 @@ check_deps() {
 make_disk() {
     mkdir -p disk/EFI/BOOT/
 
-    mv out/BOOTX64.EFI disk/EFI/BOOT
+    cp out/BOOTX64.EFI disk/EFI/BOOT/BOOTX64.EFI
 }
 
 #
