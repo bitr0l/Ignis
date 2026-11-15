@@ -4,6 +4,10 @@
 # Provided under the BSD-3 clause.
 #
 
+.SILENT:
+
+PROMPT = printf "%s\t\t%s\n"
+
 COMMON_CFLAGS =							\
 	-target x86_64-unknown-windows		\
 	-ffreestanding						\
