@@ -15,7 +15,9 @@ efi_main (
     __in EFI_SYSTEM_TABLE *systab
     )
 {
+    const uint8_t MAX_ABORT_INDEX = 8;
     status_t status;
+    uint8_t index;
 
     /*
      * Initialize the global firmware interface.
@@ -41,5 +43,17 @@ efi_main (
      */
 
     ipl_main();
+    cons_printf(DOTS L"IPL ABORTED ****\r\n");
+
+    /*
+     * Stall before aborting.
+     */
+
+    for (index = 0; index < MAX_ABORT_INDEX; ++index) {
+        cons_printf(DOTS L"Aborting in %d\r", MAX_ABORT_INDEX - index);
+        g_bs->Stall(500000);
+    }
+
+    cons_printf(L"\r\n");
     return EFI_ABORTED;
 }
