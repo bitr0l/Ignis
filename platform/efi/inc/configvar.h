@@ -10,10 +10,8 @@
 #include <sys/types.h>
 #include <sys/status.h>
 #include <sys/comdef.h>
+#include <config.h>
 #include <stdbool.h>
-
-/* Maximum length of identifiers */
-#define CONFIG_MAX_IDENT_LEN 32
 
 /*
  * Represents valid lexical tokens.

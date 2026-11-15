@@ -10,6 +10,10 @@
 #include <bootlib.h>
 #include <string.h>
 
+/* Valid keys */
+#define CONFIG_KEY_KERNEL   L"kernel"
+#define CONFIG_KEY_PROTOCOL L"protocol"
+
 /*
  * Symbolic token.
  */
@@ -88,6 +92,46 @@ assert_next (
 }
 
 /*
+ * Parse a key/value pair within an entry.
+ *
+ * @entry:      Menu entry
+ * @key:        Key to parse
+ * @value:      Value to table
+ *
+ * Return value:
+ *      Returns STATUS_SUCCESS if successful.
+ *      Returns an error code on failure.
+ */
+static status_t
+parse_key_value (
+    __in struct config_menu_entry *entry,
+    __in const wchar_t *key,
+    __in const wchar_t *value
+    )
+{
+    size_t len;
+
+    if (entry == NULL || key == NULL) {
+        return STATUS_INVALID_PARAM;
+    }
+
+    if (value == NULL) {
+        return STATUS_INVALID_PARAM;
+    }
+
+    /* TODO: Find a more efficent way with many keys */
+    if (memcmp(key, CONFIG_KEY_KERNEL, sizeof(CONFIG_KEY_KERNEL)) == 0) {
+        len = wcslen(value);
+        wmemcpy(entry->kernel, value, len);
+    } else if (memcmp(key, CONFIG_KEY_PROTOCOL, sizeof(CONFIG_KEY_PROTOCOL)) == 0) {
+        len = wcslen(value);
+        wmemcpy(entry->protocol, value, len);
+    }
+
+    return STATUS_SUCCESS;
+}
+
+/*
  * Parse a menu entry.
  *
  * @lexer:      Lexer state machine
@@ -105,8 +149,10 @@ parse_menu_entry (
     __out struct config_boot_table *boot_tab
     )
 {
+    wchar_t key[CONFIG_MAX_IDENT_LEN];
+    wchar_t value[CONFIG_MAX_IDENT_LEN];
     struct config_menu_entry *entry;
-    size_t name_len;
+    size_t len;
     status_t status;
 
     if (lexer == NULL || token == NULL) {
@@ -123,9 +169,9 @@ parse_menu_entry (
     }
 
     entry = &boot_tab->entries[boot_tab->nr_entries++];
-    name_len = wcslen(token->s);
+    len = wcslen(token->s);
 
-    if (name_len >= CONFIG_MENU_ENTRY_LEN - 1) {
+    if (len >= CONFIG_MENU_ENTRY_LEN - 1) {
         cons_printf(
             DOTS L"fatal: Menu entry name '%s' exceeds maximum length\r\n",
             token->s
@@ -135,7 +181,7 @@ parse_menu_entry (
     }
 
     /* Copy the menu entry name */
-    wmemcpy(entry->name, token->s, name_len);
+    wmemcpy(entry->name, token->s, len);
 
     /* Expect '{' */
     status = assert_next(lexer, token, CONFIG_TT_LBRACE);
@@ -155,7 +201,9 @@ parse_menu_entry (
             return status;
         }
 
-        cons_printf(DOTS L"Got key %s in entry %s\r\n", token->s, entry->name);
+        /* Copy the key */
+        len = wcslen(token->s);
+        wmemcpy(key, token->s, len + 1);
 
         /* Expect ':' */
         status = assert_next(lexer, token, CONFIG_TT_COLON);
@@ -177,7 +225,15 @@ parse_menu_entry (
             return status;
         }
 
-        cons_printf(DOTS L"Got value %s in entry %s\r\n", token->s, entry->name);
+        /* Copy the value */
+        len = wcslen(token->s);
+        wmemcpy(value, token->s, len + 1);
+
+        /* Parse the key/value pair */
+        status = parse_key_value(entry, key, value);
+        if (status != STATUS_SUCCESS) {
+            return status;
+        }
 
         /* Peek to see if there is a '}' */
         status = config_lexer_scan(lexer, token);

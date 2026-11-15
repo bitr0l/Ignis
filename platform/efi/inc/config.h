@@ -12,6 +12,9 @@
 #include <sys/comdef.h>
 #include <wchar.h>
 
+/* Maximum length of identifiers */
+#define CONFIG_MAX_IDENT_LEN 32
+
 /* Maximum length of menu entry name */
 #define CONFIG_MENU_ENTRY_LEN 32
 
@@ -33,11 +36,13 @@ typedef enum {
  * Represents a menu entry.
  *
  * @name:       Name of menu entry
+ * @kernel:     Kernel to be loaded
  * @protocol:   Protocol to be used for entry
  */
 struct config_menu_entry {
     wchar_t name[CONFIG_MENU_ENTRY_LEN];
-    config_protocol_t protocol;
+    wchar_t kernel[CONFIG_MAX_IDENT_LEN];
+    wchar_t protocol[CONFIG_MAX_IDENT_LEN];
 };
 
 /*
