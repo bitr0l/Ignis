@@ -5,6 +5,7 @@
  */
 
 #include <bootlib.h>
+#include <menu.h>
 
 void
 ipl_main (
@@ -12,9 +13,8 @@ ipl_main (
     )
 {
     EFI_FILE_HANDLE boot_volume;
-    struct config_menu_entry *menu_entry;
     struct config_boot_table boot_tab;
-    size_t index;
+    struct config_menu_entry boot_entry;
     status_t status;
 
     /*
@@ -62,14 +62,12 @@ ipl_main (
         return;
     }
 
-    for (index = 0; index < boot_tab.nr_entries; ++index) {
-        menu_entry = &boot_tab.entries[index];
+    /*
+     * Enter the boot menu.
+     */
 
-        cons_printf(
-            DOTS L"MENU ENTRY(%s) : [proto '%s', kernel '%s']\r\n",
-            menu_entry->name,
-            menu_entry->protocol,
-            menu_entry->kernel
-        );
+    status = simple_menu_start(&boot_tab, &boot_entry);
+    if (!SYS_SUCCESS(status)) {
+        return;
     }
 }
