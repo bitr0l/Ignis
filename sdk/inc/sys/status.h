@@ -16,6 +16,7 @@
 #define STATUS_NOT_EXEC         0x00000004UL   /* Not executable */
 #define STATUS_FAILURE          0x00000005UL   /* Operation failed */
 #define STATUS_NOT_FOUND        0x00000007UL   /* Resource not found */
+#define STATUS_END_OF_FILE      0x00000008UL   /* End of file reached */
 
 /*
  * All routines returning status codes must be of the
