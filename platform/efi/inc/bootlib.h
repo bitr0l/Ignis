@@ -11,6 +11,7 @@
 #include <sys/status.h>
 #include <sys/comdef.h>
 #include <efilib.h>
+#include <config.h>
 #include <wchar.h>
 
 /*
@@ -120,6 +121,7 @@ get_boot_volume (
  * Configures the loader through ignis.cfg on the boot volume.
  *
  * @boot_volume: The boot volume expected to contain the cfg
+ * @boot_tab:    Resulting boot table
  *
  * Return value:
  *     Returns STATUS_SUCCESS if successful.
@@ -127,7 +129,8 @@ get_boot_volume (
  */
 status_t
 loader_configure (
-    __in EFI_FILE_HANDLE boot_volume
+    __in EFI_FILE_HANDLE boot_volume,
+    __out struct config_boot_table *boot_tab
     );
 
 /*

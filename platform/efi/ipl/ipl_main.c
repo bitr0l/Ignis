@@ -12,6 +12,7 @@ ipl_main (
     )
 {
     EFI_FILE_HANDLE boot_volume;
+    struct config_boot_table boot_tab;
     status_t status;
 
     /*
@@ -54,7 +55,7 @@ ipl_main (
      *      are needed on this failure path.
      */
 
-    status = loader_configure(boot_volume);
+    status = loader_configure(boot_volume, &boot_tab);
     if (status != STATUS_SUCCESS) {
         return;
     }
