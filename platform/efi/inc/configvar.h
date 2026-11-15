@@ -11,16 +11,23 @@
 #include <sys/status.h>
 #include <sys/comdef.h>
 
+/* Maximum length of identifiers */
+#define CONFIG_MAX_IDENT_LEN 32
+
 /*
  * Represents valid lexical tokens.
  *
  * @CONFIG_TT_NONE:     [NONE]
+ * @CONFIG_TT_IDENT:    [IDENTIFIER]
+ * @CONFIG_TT_STRING:   [STRING]
  * @CONFIG_TT_COLON:    ':'
  * @CONFIG_TT_LBRACE:   '{'
  * @CONFIG_TT_RBRACE:   '}'
  */
 typedef enum {
     CONFIG_TT_NONE,
+    CONFIG_TT_IDENT,
+    CONFIG_TT_STRING,
     CONFIG_TT_COLON,
     CONFIG_TT_LBRACE,
     CONFIG_TT_RBRACE
@@ -31,11 +38,13 @@ typedef enum {
  *
  * @kind:  Token kind
  * @c:     Single character variant
+ * @s:     Null terminated string variant
  */
 struct config_token {
     config_token_t kind;
     union {
         char c;
+        wchar_t s[CONFIG_MAX_IDENT_LEN];
     };
 };
 

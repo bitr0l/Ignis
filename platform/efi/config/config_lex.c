@@ -8,6 +8,9 @@
 #include <bootlib.h>
 #include <stdbool.h>
 
+/* Character transformers */
+#define TO_LOWER(C) ((C) | 0x20)
+
 /*
  * Checks if a character is a whitespace.
  *
@@ -31,6 +34,25 @@ lexer_is_ws (
     }
 
     return false;
+}
+
+/*
+ * Checks if a character is alphabetical
+ *
+ * @c: Character to check
+ *
+ * Return value:
+ *      Returns true if the given character is a letter.
+ *      Returns false if the given character is not a letter.
+ */
+static inline bool
+lexer_is_alpha (
+    __in char c
+    )
+{
+    char lc = TO_LOWER(c);
+
+    return lc >= 'a' && lc <= 'z';
 }
 
 /*
@@ -65,6 +87,101 @@ lexer_consume_byte (
     }
 
     return '\0';
+}
+
+/*
+ * Scan an identifier
+ *
+ * @state:  Lexer state
+ * @lc:     Last character scanned
+ * @token:  Resulting token
+ *
+ * Return value:
+ *      Returns STATUS_SUCCESS on success.
+ *      Returns error code on failure.
+ */
+static status_t
+lexer_scan_ident (
+    __in struct config_lexer_state *state,
+    __in char lc,
+    __out struct config_token *token
+    )
+{
+    char c;
+    size_t sidx = 0;
+
+    if (state == NULL || token == NULL) {
+        return STATUS_INVALID_PARAM;
+    }
+
+    token->s[sidx++] = lc;
+    for (;;) {
+        /* Consume and test */
+        c = lexer_consume_byte(state, false);
+        if (!lexer_is_alpha(c)) {
+            break;
+        }
+
+        /* Don't overflow */
+        if (sidx >= CONFIG_MAX_IDENT_LEN - 1) {
+            cons_printf(DOTS L"fatal: Identifier exceeds maximum length\r\n");
+            return STATUS_FAILURE;
+        }
+
+        token->s[sidx++] = c;
+    }
+
+    token->kind = CONFIG_TT_IDENT;
+    token->s[sidx] = '\0';
+    return STATUS_SUCCESS;
+}
+
+/*
+ * Scan a string
+ *
+ * @state:  Lexer state
+ * @token:  Resulting token
+ *
+ * Return value:
+ *      Returns STATUS_SUCCESS on success.
+ *      Returns error code on failure.
+ */
+static status_t
+lexer_scan_string (
+    __in struct config_lexer_state *state,
+    __out struct config_token *token
+    )
+{
+    char c;
+    size_t sidx = 0;
+
+    if (state == NULL || token == NULL) {
+        return STATUS_INVALID_PARAM;
+    }
+
+    for (;;) {
+        c = lexer_consume_byte(state, false);
+
+        if (c == '\0') {
+            cons_printf(DOTS L"fatal: Unclosed '\"' in string\r\n");
+            return STATUS_FAILURE;
+        }
+
+        if (c == '"') {
+            break;
+        }
+
+        if (sidx >= CONFIG_MAX_IDENT_LEN - 1) {
+            cons_printf(DOTS L"fatal: String exceeds maximum length\r\n");
+            return STATUS_FAILURE;
+        }
+
+        token->s[sidx++] = c;
+    }
+
+    token->s[sidx] = '\0';
+    token->kind = CONFIG_TT_STRING;
+    return STATUS_SUCCESS;
 }
 
 status_t
@@ -113,6 +230,15 @@ config_lexer_scan (
         token->kind = CONFIG_TT_RBRACE;
         token->c = c;
         return STATUS_SUCCESS;
+    case '"':
+        return lexer_scan_string(state, token);
+    default:
+        /* Is it an identifier? */
+        if (lexer_is_alpha(c)) {
+            return lexer_scan_ident(state, c, token);
+        }
+
+        break;
     }
 
     cons_printf(

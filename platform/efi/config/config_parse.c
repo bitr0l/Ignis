@@ -40,6 +40,8 @@
  */
 static const wchar_t *toktab[] = {
     [CONFIG_TT_NONE]        = SYMTOK(L"NONE"),
+    [CONFIG_TT_IDENT]       = SYMTOK(L"IDENT"),
+    [CONFIG_TT_STRING]      = SYMTOK(L"STRING"),
     [CONFIG_TT_COLON]       = LITTOK(L":"),
     [CONFIG_TT_LBRACE]      = LITTOK(L"{"),
     [CONFIG_TT_RBRACE]      = LITTOK(L"}")
@@ -84,6 +86,9 @@ config_parse (
             return status;
 
         cons_printf(DOTS L"Got config token %s\r\n", TOKEN_STRING(&token));
+        if (token.kind == CONFIG_TT_IDENT || token.kind == CONFIG_TT_STRING) {
+            cons_printf(DOTS L"(%s)\r\n", token.s);
+        }
     }
 
     return STATUS_SUCCESS;
