@@ -62,6 +62,8 @@ config_parse (
         return STATUS_INVALID_PARAM;
     }
 
+    memset(boot_tab, 0, sizeof(*boot_tab));
+
     /*
      * Initialize the lexer.
      */
