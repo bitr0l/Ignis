@@ -46,4 +46,16 @@ ipl_main (
         cons_printf(DOTS L"fatal: Unable to obtain boot volume\r\n");
         return;
     }
+
+    /*
+     * Configure the loader through ignis.cfg
+     *
+     * XXX: This call is expected to produce logs thus no error messages
+     *      are needed on this failure path.
+     */
+
+    status = loader_configure(boot_volume);
+    if (status != STATUS_SUCCESS) {
+        return;
+    }
 }

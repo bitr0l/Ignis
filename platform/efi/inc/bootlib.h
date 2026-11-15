@@ -117,6 +117,20 @@ get_boot_volume (
     );
 
 /*
+ * Configures the loader through ignis.cfg on the boot volume.
+ *
+ * @boot_volume: The boot volume expected to contain the cfg
+ *
+ * Return value:
+ *     Returns STATUS_SUCCESS if successful.
+ *     Returns error code on failure.
+ */
+status_t
+loader_configure (
+    __in EFI_FILE_HANDLE boot_volume
+    );
+
+/*
  * Obtain the platform memory map.
  *
  * @map: Result is written here

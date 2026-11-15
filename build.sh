@@ -34,6 +34,7 @@ make_disk() {
     mkdir -p disk/EFI/BOOT/
 
     cp out/BOOTX64.EFI disk/EFI/BOOT/BOOTX64.EFI
+    cp test/ignis.cfg disk/ignis.cfg
 }
 
 #
