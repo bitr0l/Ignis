@@ -58,7 +58,7 @@ ipl_main (
      */
 
     status = loader_configure(boot_volume, &boot_tab);
-    if (status != STATUS_SUCCESS) {
+    if (!SYS_SUCCESS(status)) {
         return;
     }
 
