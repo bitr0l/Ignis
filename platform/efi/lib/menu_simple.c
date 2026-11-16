@@ -79,7 +79,7 @@ simple_menu_start (
     }
 
     menu_entry = &boot_tab->entries[sel];
-    cons_printf(DOTS L"Handing off to %s...\r\n", menu_entry->name);
+    cons_printf(DOTS L"Begin IPL handoff to %s\r\n", menu_entry->name);
     *entry = *menu_entry;
     return STATUS_SUCCESS;
 }
