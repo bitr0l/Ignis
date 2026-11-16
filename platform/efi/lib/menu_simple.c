@@ -78,6 +78,8 @@ simple_menu_start (
         break;
     }
 
-    *entry = boot_tab->entries[sel];
+    menu_entry = &boot_tab->entries[sel];
+    cons_printf(DOTS L"Handing off to %s...\r\n", menu_entry->name);
+    *entry = *menu_entry;
     return STATUS_SUCCESS;
 }
