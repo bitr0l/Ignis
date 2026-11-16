@@ -20,9 +20,11 @@ CFLAGS =                                 \
         $(COMMON_CFLAGS)             	 \
 		-I$(GLOBAL_ROOT)/sdk/inc		 \
 		-I$(GLOBAL_ROOT)/sdk/inc/crt	 \
+		-I$(GLOBAL_ROOT)/platform/inc	 \
         -O2                              \
 		-MMD                             \
 		-Iinc							 \
+		-Itarget						 \
 		-fms-extensions
 
 .PHONY: all

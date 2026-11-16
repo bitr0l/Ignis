@@ -5,5 +5,11 @@
 #
 
 .PHONY: all
-all:
+all: target
 	cd ../../../platform/efi; $(MAKE)
+
+.PHONY: target
+target:
+	mkdir -p $(GLOBAL_ROOT)/platform/efi/target
+	rsync -avr $(GLOBAL_ROOT)/platform/inc/arch/$(CONFIG_ARCH)/$(CONFIG_CHIP)/*.h \
+		$(GLOBAL_ROOT)/platform/efi/target
