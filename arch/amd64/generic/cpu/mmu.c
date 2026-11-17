@@ -74,6 +74,10 @@ px_mmu_init (
     pml4[0] = (uint64_t)pdpt_low;
     pml4[0] |= PTE_P | PTE_RW;
 
+    /* Set up direct map */
+    pml4[256] = (uint64_t)pdpt_low;
+    pml4[256] |= PTE_P | PTE_RW;
+
     /* Point PML4 to high PDPT */
     pml4[511] = (uint64_t)pdpt_high;
     pml4[511] |= PTE_P | PTE_RW;

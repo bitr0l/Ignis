@@ -15,6 +15,9 @@
 /* Higher half kernel base address */
 #define KERNEL_VBASE 0xFFFFFFFF80000000
 
+/* Direct map base address */
+#define DIRECT_MAP_VBASE 0xFFFF800000000000
+
 /*
  * Initialize the platform MMU
  *
