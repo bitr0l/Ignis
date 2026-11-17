@@ -11,6 +11,9 @@
 #include <binload.h>
 #include <menu.h>
 
+/* Kernel entry function */
+typedef void(__attribute__((sysv_abi)) *kentry_t)(void);
+
 /*
  * Hang the processor in case we can't use boot services and
  * something goes wrong.
@@ -45,6 +48,7 @@ ipl_main (
     struct memory_map mem_map;
     bool need_high_map;
     uint64_t kentry;
+    kentry_t handoff;
     status_t status;
 
     /*
@@ -158,6 +162,7 @@ ipl_main (
         }
     }
 
-    ((void(*)(void))kentry)();
+    handoff = (kentry_t)kentry;
+    handoff();
     __builtin_unreachable();
 }
