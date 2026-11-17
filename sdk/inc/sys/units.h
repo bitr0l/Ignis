@@ -9,5 +9,6 @@
 
 /* Size units */
 #define UNIT_GIB 0x40000000ULL
+#define UNIT_MIB 0x100000ULL
 
 #endif  /* !_SYS_UNITS_H */

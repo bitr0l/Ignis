@@ -21,4 +21,4 @@ Valid keys are described below:
 
 ## Valid Protocols
 
-- flat : Flat binary, no structure, expected to be loaded at 1 MiB
+- flat : Flat binary, no structure, expected to be loaded at 2 MiB

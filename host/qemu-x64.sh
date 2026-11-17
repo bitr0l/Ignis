@@ -8,4 +8,4 @@
 qemu-system-x86_64                          \
     -bios OVMF.fd                         \
     -hda fat:rw:disk                        \
-    -serial stdio
+    -monitor stdio

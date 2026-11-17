@@ -23,11 +23,11 @@ binload_flat (
     }
 
     /*
-     * Load the kernel, it expects to sit at 1 MiB.
+     * Load the kernel, it expects to sit at 2 MiB.
      */
 
     kimage_size = ALIGN_UP(kernel->size_bytes, EFI_PAGE_SIZE);
-    kernel_image = (EFI_PHYSICAL_ADDRESS)0x100000;
+    kernel_image = (EFI_PHYSICAL_ADDRESS)0x200000;
 
     efi_status = g_bs->AllocatePages(
         AllocateAddress,
@@ -37,7 +37,7 @@ binload_flat (
     );
 
     if (efi_status != EFI_SUCCESS) {
-        cons_printf(DOTS L"fatal: failed to reserve region at 1 MiB\r\n");
+        cons_printf(DOTS L"fatal: failed to reserve region at 2 MiB\r\n");
         return efi_status_conv(efi_status);
     }
 

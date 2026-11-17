@@ -25,7 +25,7 @@
  * Represents valid protocols.
  *
  * @CONFIG_PROTOCOL_NONE:   No associated protocol (INVALID)
- * @CONFIG_PROTOCOL_FLAT:   Flat binary protocol @ 1 MiB
+ * @CONFIG_PROTOCOL_FLAT:   Flat binary protocol @ 2 MiB
  */
 typedef enum {
     CONFIG_PROTOCOL_NONE,
