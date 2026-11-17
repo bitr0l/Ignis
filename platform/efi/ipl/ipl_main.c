@@ -5,9 +5,32 @@
  */
 
 #include <sys/cdef.h>
+#include <pexpert/mmu.h>
+#include <pexpert/prim.h>
 #include <bootlib.h>
 #include <binload.h>
 #include <menu.h>
+
+/*
+ * Hang the processor in case we can't use boot services and
+ * something goes wrong.
+ *
+ * @reason:  Reason for hang
+ *
+ * TODO: Log to serial
+ */
+static void
+hang (
+    __in const char *reason
+    )
+{
+    (void)reason;
+
+    for (;;) {
+        PX_INT_DISABLE();
+        PX_CORE_HALT();
+    }
+}
 
 void
 ipl_main (
@@ -20,6 +43,7 @@ ipl_main (
     struct config_boot_table boot_tab;
     struct config_menu_entry boot_entry;
     struct memory_map mem_map;
+    uint64_t kentry;
     status_t status;
 
     /*
@@ -99,6 +123,7 @@ ipl_main (
     /*
      * Exit boot services.
      */
+
     efi_status = g_bs->ExitBootServices(
         g_image,
         mem_map.key
@@ -113,6 +138,15 @@ ipl_main (
         return;
     }
 
-    ((void(*)(void))kbase)();
+    /*
+     * Jump to kernel entry.
+     */
+
+    status = px_mmu_init((uint64_t)kbase, &kentry);
+    if (!SYS_SUCCESS(status)) {
+        hang("px_mmu_init failure");
+    }
+
+    ((void(*)(void))kentry)();
     __builtin_unreachable();
 }
