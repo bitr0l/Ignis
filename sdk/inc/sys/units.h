@@ -8,6 +8,6 @@
 #define _SYS_UNITS_H 1
 
 /* Size units */
-#define UNIT_GIB 0x40000000
+#define UNIT_GIB 0x40000000ULL
 
 #endif  /* !_SYS_UNITS_H */
