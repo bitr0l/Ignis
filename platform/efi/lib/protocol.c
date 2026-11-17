@@ -33,7 +33,10 @@ ignis_fill (
 
     proto_handle = (struct ignis_protocol *)handle;
     proto_handle->direct_map = DIRECT_MAP_VBASE;
-    proto_handle->mem_map = proto_params->mem_map;
+    proto_handle->mem_map = PTR_OFFSET(
+        proto_params->mem_map,
+        DIRECT_MAP_VBASE
+    );
     return STATUS_SUCCESS;
 }
 
