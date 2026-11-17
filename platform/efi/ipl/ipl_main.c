@@ -210,10 +210,6 @@ ipl_main (
         return;
     }
 
-    if (!SYS_SUCCESS(status)) {
-        return;
-    }
-
     kentry = (uint64_t)kbase;
 
     /*
