@@ -21,6 +21,7 @@
  * @entry:              Boot entry to load
  * @base:               Resulting base address
  * @require_high_map:   Returns true if MMU init is needed
+ * @protocol:           Constructed boot protocol structure
  *
  * Return value:
  *      Returns STATUS_SUCCESS on success.
@@ -31,14 +32,16 @@ binload_delegate (
     __in EFI_FILE_HANDLE boot_volume,
     __in struct config_menu_entry *entry,
     __out EFI_PHYSICAL_ADDRESS *kbase,
-    __out bool *require_high_map
+    __out bool *require_high_map,
+    __out void **protocol
     );
 
 /*
  * Load a flat kernel binary.
  *
- * @kernel:  Kernel file descriptor
- * @base:    Resulting image base is written here
+ * @kernel:     Kernel file descriptor
+ * @base:       Resulting image base is written here
+ * @protocol:   Constructed boot protocol structure
  *
  * Return value:
  *     Returns STATUS_SUCCESS if successful.
@@ -47,7 +50,8 @@ binload_delegate (
 status_t
 binload_flat (
     __in struct file_descriptor *kernel,
-    __out EFI_PHYSICAL_ADDRESS *base
+    __out EFI_PHYSICAL_ADDRESS *base,
+    __out void **protocol
     );
 
 #endif  /* !_BINLOAD_H */

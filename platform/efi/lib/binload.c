@@ -15,7 +15,8 @@ binload_delegate (
     __in EFI_FILE_HANDLE boot_volume,
     __in struct config_menu_entry *entry,
     __out EFI_PHYSICAL_ADDRESS *kbase,
-    __out bool *require_high_map
+    __out bool *require_high_map,
+    __out void **protocol
     )
 {
     struct file_descriptor kernel_desc;
@@ -46,7 +47,7 @@ binload_delegate (
     }
 
     if (memcmp(entry->protocol, PROTOCOL_FLAT, sizeof(PROTOCOL_FLAT)) == 0) {
-        status = binload_flat(&kernel_desc, kbase);
+        status = binload_flat(&kernel_desc, kbase, protocol);
         if (!SYS_SUCCESS(status))
             return status;
 

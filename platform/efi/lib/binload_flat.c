@@ -5,21 +5,40 @@
  */
 
 #include <sys/cdef.h>
+#include <protocol/ignis.h>
+#include <pexpert/mmu.h>
 #include <binload.h>
 
 status_t
 binload_flat (
     __in struct file_descriptor *kernel,
-    __out EFI_PHYSICAL_ADDRESS *base
+    __out EFI_PHYSICAL_ADDRESS *base,
+    __out void **protocol
     )
 {
     EFI_PHYSICAL_ADDRESS kernel_image;
     EFI_STATUS efi_status;
     status_t status;
     uint64_t kimage_size;
+    struct ignis_protocol *proto_handle;
 
     if (kernel == NULL || base == NULL) {
         return STATUS_INVALID_PARAM;
+    }
+
+    /*
+     * Allocate a protocol structure.
+     */
+
+    efi_status = g_bs->AllocatePool(
+        EfiLoaderData,
+        sizeof(*proto_handle),
+        (void **)&proto_handle
+    );
+
+    if (efi_status != EFI_SUCCESS) {
+        cons_printf(DOTS L"fatal: failed to allocate ignis protocol structure\r\n");
+        return efi_status_conv(efi_status);
     }
 
     /*
@@ -56,6 +75,9 @@ binload_flat (
         return status;
     }
 
+    proto_handle->direct_map = DIRECT_MAP_VBASE;
+
     *base = kernel_image;
+    *protocol = proto_handle;
     return STATUS_SUCCESS;
 }

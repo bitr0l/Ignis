@@ -12,7 +12,7 @@
 #include <menu.h>
 
 /* Kernel entry function */
-typedef void(__attribute__((sysv_abi)) *kentry_t)(void);
+typedef void(__attribute__((sysv_abi)) *kentry_t)(void *);
 
 /*
  * Hang the processor in case we can't use boot services and
@@ -50,6 +50,7 @@ ipl_main (
     uint64_t kentry;
     kentry_t handoff;
     status_t status;
+    void *protocol;
 
     /*
      * Log loader information.
@@ -113,7 +114,8 @@ ipl_main (
         boot_volume,
         &boot_entry,
         &kbase,
-        &need_high_map
+        &need_high_map,
+        &protocol
     );
 
     if (!SYS_SUCCESS(status)) {
@@ -163,6 +165,6 @@ ipl_main (
     }
 
     handoff = (kentry_t)kentry;
-    handoff();
+    handoff(protocol);
     __builtin_unreachable();
 }
