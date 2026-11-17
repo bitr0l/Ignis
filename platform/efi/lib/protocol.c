@@ -20,7 +20,8 @@
  */
 static status_t
 ignis_fill (
-    __out void **handle
+    __out void **handle,
+    __in const struct protocol_params *proto_params
     )
 {
     EFI_STATUS efi_status;
@@ -32,12 +33,14 @@ ignis_fill (
 
     proto_handle = (struct ignis_protocol *)handle;
     proto_handle->direct_map = DIRECT_MAP_VBASE;
+    proto_handle->mem_map = proto_params->mem_map;
     return STATUS_SUCCESS;
 }
 
 status_t
 protocol_fill (
     __in protocol_t protocol,
+    __in const struct protocol_params *proto_params,
     __out void **handle
     )
 {
@@ -47,7 +50,7 @@ protocol_fill (
 
     switch (protocol) {
     case PROTOCOL_IGNIS:
-        ignis_fill(handle);
+        ignis_fill(handle, proto_params);
         break;
     default:
         return STATUS_INVALID_PARAM;

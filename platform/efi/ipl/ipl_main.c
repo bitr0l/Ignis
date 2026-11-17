@@ -91,9 +91,11 @@ ipl_main (
     EFI_PHYSICAL_ADDRESS kbase;
     EFI_FILE_HANDLE boot_volume;
     EFI_STATUS efi_status;
+    struct protocol_params proto_params;
     struct config_boot_table boot_tab;
     struct config_menu_entry boot_entry;
     struct memory_map mem_map;
+    struct protocol_memmap *proto_mem_map;
     bool need_high_map;
     uint64_t kentry;
     kentry_t handoff;
@@ -182,6 +184,23 @@ ipl_main (
     }
 
     /*
+     * Pre-allocate a finialized memory map.
+     */
+
+    efi_status = g_bs->AllocatePool(
+        EfiLoaderData,
+        sizeof(proto_params.mem_map),
+        (void **)&proto_params.mem_map
+    );
+
+    if (efi_status != EFI_SUCCESS) {
+        cons_printf(DOTS L"fatal: failed to allocate finialized memory map\r\n");
+        return;
+    }
+
+    proto_mem_map = proto_params.mem_map;
+
+    /*
      * Obtain the platform memory map.
      */
 
@@ -191,7 +210,14 @@ ipl_main (
         return;
     }
 
-    status = protocol_fill(protocol, proto_handle);
+    proto_mem_map->entries = mem_map.entries;
+    proto_mem_map->entry_count = mem_map.entry_count;
+
+    /*
+     * Fill in the protocol structure.
+     */
+
+    status = protocol_fill(protocol, &proto_params, proto_handle);
     if (!SYS_SUCCESS(status)) {
         return;
     }
