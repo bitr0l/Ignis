@@ -33,7 +33,7 @@ check_deps() {
 make_disk() {
     mkdir -p disk/EFI/BOOT/
 
-    nasm -fbin test/entry.asm -o disk/kernel.sys
+    nasm -fbin test/entry.asm -o disk/debug.sys
     cp out/BOOTX64.EFI disk/EFI/BOOT/BOOTX64.EFI
     cp test/ignis.cfg disk/ignis.cfg
 }
