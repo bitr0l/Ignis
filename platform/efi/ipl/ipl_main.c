@@ -43,6 +43,7 @@ ipl_main (
     struct config_boot_table boot_tab;
     struct config_menu_entry boot_entry;
     struct memory_map mem_map;
+    bool need_high_map;
     uint64_t kentry;
     status_t status;
 
@@ -104,7 +105,13 @@ ipl_main (
      * Load the kernel.
      */
 
-    status = binload_delegate(boot_volume, &boot_entry, &kbase);
+    status = binload_delegate(
+        boot_volume,
+        &boot_entry,
+        &kbase,
+        &need_high_map
+    );
+
     if (!SYS_SUCCESS(status)) {
         cons_printf(DOTS L"fatal: failed to load kernel\r\n");
         return;
@@ -138,13 +145,17 @@ ipl_main (
         return;
     }
 
+    kentry = (uint64_t)kbase;
+
     /*
      * Jump to kernel entry.
      */
 
-    status = px_mmu_init((uint64_t)kbase, &kentry);
-    if (!SYS_SUCCESS(status)) {
-        hang("px_mmu_init failure");
+    if (need_high_map) {
+        status = px_mmu_init((uint64_t)kbase, &kentry);
+        if (!SYS_SUCCESS(status)) {
+            hang("px_mmu_init failure");
+        }
     }
 
     ((void(*)(void))kentry)();

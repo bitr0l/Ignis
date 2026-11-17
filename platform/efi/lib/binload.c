@@ -14,7 +14,8 @@ status_t
 binload_delegate (
     __in EFI_FILE_HANDLE boot_volume,
     __in struct config_menu_entry *entry,
-    __out EFI_PHYSICAL_ADDRESS *kbase
+    __out EFI_PHYSICAL_ADDRESS *kbase,
+    __out bool *require_high_map
     )
 {
     struct file_descriptor kernel_desc;
@@ -23,6 +24,8 @@ binload_delegate (
     if (entry == NULL) {
         return STATUS_INVALID_PARAM;
     }
+
+    *require_high_map = false;
 
     /*
      * Open the selected kernel.
@@ -46,6 +49,8 @@ binload_delegate (
         status = binload_flat(&kernel_desc, kbase);
         if (!SYS_SUCCESS(status))
             return status;
+
+        *require_high_map = true;
     } else {
         cons_printf(DOTS L"fatal: Invalid protocol '%s'\r\n", entry->protocol);
         return STATUS_FAILURE;

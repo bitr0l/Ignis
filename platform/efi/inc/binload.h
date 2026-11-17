@@ -12,13 +12,15 @@
 #include <efilib.h>
 #include <bootlib.h>
 #include <config.h>
+#include <stdbool.h>
 
 /*
  * Delegate a binary to the proper loader.
  *
- * @boot_volume:    Boot volume kernel lives on
- * @entry:          Boot entry to load
- * @base:           Resulting base address
+ * @boot_volume:        Boot volume kernel lives on
+ * @entry:              Boot entry to load
+ * @base:               Resulting base address
+ * @require_high_map:   Returns true if MMU init is needed
  *
  * Return value:
  *      Returns STATUS_SUCCESS on success.
@@ -28,7 +30,8 @@ status_t
 binload_delegate (
     __in EFI_FILE_HANDLE boot_volume,
     __in struct config_menu_entry *entry,
-    __out EFI_PHYSICAL_ADDRESS *kbase
+    __out EFI_PHYSICAL_ADDRESS *kbase,
+    __out bool *require_high_map
     );
 
 /*
