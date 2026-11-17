@@ -10,6 +10,6 @@ all: target
 
 .PHONY: target
 target:
-	mkdir -p $(GLOBAL_ROOT)/platform/efi/target
+	mkdir -p $(GLOBAL_ROOT)/platform/efi/target/machine
 	rsync -avr $(GLOBAL_ROOT)/platform/inc/arch/$(CONFIG_ARCH)/$(CONFIG_CHIP)/*.h \
-		$(GLOBAL_ROOT)/platform/efi/target
+		$(GLOBAL_ROOT)/platform/efi/target/machine
