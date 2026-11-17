@@ -17,7 +17,7 @@
 /*
  * Constant strings.
  */
-#define LOADER_REVISION L"v0.0.1"
+#define LOADER_REVISION L"v0.0.2"
 #define LOADER_NAME     L"Ignis"
 #define DOTS            L"........ "
 
