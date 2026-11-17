@@ -16,7 +16,7 @@ binload_delegate (
     __in struct config_menu_entry *entry,
     __out EFI_PHYSICAL_ADDRESS *kbase,
     __out bool *require_high_map,
-    __out void **protocol
+    __out protocol_t *protocol
     )
 {
     struct file_descriptor kernel_desc;

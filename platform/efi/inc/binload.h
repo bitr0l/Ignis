@@ -9,6 +9,7 @@
 
 #include <sys/types.h>
 #include <sys/comdef.h>
+#include <protocol/protocol.h>
 #include <efilib.h>
 #include <bootlib.h>
 #include <config.h>
@@ -21,7 +22,7 @@
  * @entry:              Boot entry to load
  * @base:               Resulting base address
  * @require_high_map:   Returns true if MMU init is needed
- * @protocol:           Constructed boot protocol structure
+ * @protocol:           Boot protocol
  *
  * Return value:
  *      Returns STATUS_SUCCESS on success.
@@ -33,7 +34,7 @@ binload_delegate (
     __in struct config_menu_entry *entry,
     __out EFI_PHYSICAL_ADDRESS *kbase,
     __out bool *require_high_map,
-    __out void **protocol
+    __out protocol_t *protocol
     );
 
 /*
@@ -41,7 +42,7 @@ binload_delegate (
  *
  * @kernel:     Kernel file descriptor
  * @base:       Resulting image base is written here
- * @protocol:   Constructed boot protocol structure
+ * @protocol:   Boot protocol
  *
  * Return value:
  *     Returns STATUS_SUCCESS if successful.
@@ -51,7 +52,7 @@ status_t
 binload_flat (
     __in struct file_descriptor *kernel,
     __out EFI_PHYSICAL_ADDRESS *base,
-    __out void **protocol
+    __out protocol_t *protocol
     );
 
 #endif  /* !_BINLOAD_H */

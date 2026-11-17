@@ -13,7 +13,7 @@ status_t
 binload_flat (
     __in struct file_descriptor *kernel,
     __out EFI_PHYSICAL_ADDRESS *base,
-    __out void **protocol
+    __out protocol_t *protocol
     )
 {
     EFI_PHYSICAL_ADDRESS kernel_image;
@@ -24,21 +24,6 @@ binload_flat (
 
     if (kernel == NULL || base == NULL) {
         return STATUS_INVALID_PARAM;
-    }
-
-    /*
-     * Allocate a protocol structure.
-     */
-
-    efi_status = g_bs->AllocatePool(
-        EfiLoaderData,
-        sizeof(*proto_handle),
-        (void **)&proto_handle
-    );
-
-    if (efi_status != EFI_SUCCESS) {
-        cons_printf(DOTS L"fatal: failed to allocate ignis protocol structure\r\n");
-        return efi_status_conv(efi_status);
     }
 
     /*
@@ -75,9 +60,7 @@ binload_flat (
         return status;
     }
 
-    proto_handle->direct_map = DIRECT_MAP_VBASE;
-
     *base = kernel_image;
-    *protocol = proto_handle;
+    *protocol = PROTOCOL_IGNIS;
     return STATUS_SUCCESS;
 }

@@ -7,9 +7,14 @@
 #include <sys/cdef.h>
 #include <pexpert/mmu.h>
 #include <pexpert/prim.h>
+#include <protocol/ignis.h>
+#include <protocol/protocol.h>
 #include <bootlib.h>
 #include <binload.h>
 #include <menu.h>
+
+/* Globals */
+static void *proto_handle;
 
 /* Kernel entry function */
 typedef void(__attribute__((sysv_abi)) *kentry_t)(void *);
@@ -35,6 +40,49 @@ hang (
     }
 }
 
+/*
+ * Allocate a protocol handle.
+ *
+ * @protocol:  Protocol to allocate for
+ *
+ * Return value:
+ *      Returns STATUS_SUCCESS if successful.
+ *      Returns error code on failure.
+ */
+static status_t
+allocate_proto_handle (
+    __in protocol_t protocol
+    )
+{
+    EFI_STATUS efi_status;
+    uint64_t size;
+
+    switch (protocol) {
+    case PROTOCOL_IGNIS:
+        size = sizeof(struct ignis_protocol);
+        break;
+    default:
+        return STATUS_INVALID_PARAM;
+    }
+
+    /*
+     * Allocate a protocol structure.
+     */
+
+    efi_status = g_bs->AllocatePool(
+        EfiLoaderData,
+        size,
+        (void **)&proto_handle
+    );
+
+    if (efi_status != EFI_SUCCESS) {
+        cons_printf(DOTS L"fatal: failed to allocate ignis protocol structure\r\n");
+        return efi_status_conv(efi_status);
+    }
+
+    return STATUS_SUCCESS;
+}
+
 void
 ipl_main (
     void
@@ -50,7 +98,7 @@ ipl_main (
     uint64_t kentry;
     kentry_t handoff;
     status_t status;
-    void *protocol;
+    protocol_t protocol;
 
     /*
      * Log loader information.
@@ -124,12 +172,27 @@ ipl_main (
     }
 
     /*
+     * Allocate a protocol handle.
+     */
+
+    status = allocate_proto_handle(protocol);
+    if (!SYS_SUCCESS(status)) {
+        cons_printf(DOTS L"fatal: failed allocate protocol handle\r\n");
+        return;
+    }
+
+    /*
      * Obtain the platform memory map.
      */
 
     status = get_memory_map(&mem_map);
     if (!SYS_SUCCESS(status)) {
         cons_printf(DOTS L"fatal: failed to obtain memory map\r\n");
+        return;
+    }
+
+    status = protocol_fill(protocol, proto_handle);
+    if (!SYS_SUCCESS(status)) {
         return;
     }
 
@@ -165,6 +228,6 @@ ipl_main (
     }
 
     handoff = (kentry_t)kentry;
-    handoff(protocol);
+    handoff(proto_handle);
     __builtin_unreachable();
 }
