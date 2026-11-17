@@ -7,6 +7,8 @@
 #ifndef _MACHINE_MMU_H
 #define _MACHINE_MMU_H 1
 
+#include <sys/comdef.h>
+#include <sys/types.h>
 #include <sys/cdef.h>
 
 /*
@@ -24,5 +26,26 @@
 #define PTE_PS          BIT(7)        /* Page size */
 #define PTE_GLOBAL      BIT(8)        /* Global; sticky */
 #define PTE_NX          BIT(63)       /* Execute-disable */
+
+/*
+ * Read the processor CR3 register.
+ *
+ * Return value:
+ *      Returns the entire contents of CR3.
+ */
+uint64_t
+mmu_read_cr3 (
+    void
+    );
+
+/*
+ * Write a value to the processor CR3 register.
+ *
+ * @value: Value to write to CR3
+ */
+void
+mmu_write_cr3 (
+    uint64_t value
+    );
 
 #endif  /* !_MACHINE_MMU_H */

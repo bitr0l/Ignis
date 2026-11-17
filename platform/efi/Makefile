@@ -8,6 +8,7 @@ include ../../mk/common.mk
 
 CFILES = $(shell find . -name "*.c")
 CFILES += $(shell find $(GLOBAL_ROOT)/sdk/crt/ -name "*.c")
+CFILES += $(shell find $(GLOBAL_ROOT)/arch/$(CONFIG_ARCH)/$(CONFIG_CHIP) -name "*.c")
 OFILES = $(CFILES:.c=.o)
 DFILES = $(CFILES:.c=.d)
 
