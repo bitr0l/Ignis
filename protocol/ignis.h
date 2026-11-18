@@ -15,6 +15,8 @@
 #define BOOT_MEMORY_RESERVED 0x00000000UL   /* Reserved by firmware */
 #define BOOT_MEMORY_USABLE   0x00000001UL   /* Usable memory */
 #define BOOT_MEMORY_BAD      0x00000002UL   /* Unusable memory */
+#define BOOT_MEMORY_LOADER   0x00000004UL   /* Bootloader memory */
+#define BOOT_MEMORY_ACPI_NVS 0x00000005UL   /* ACPI NVS */
 
 typedef uint32_t memkind_t;
 

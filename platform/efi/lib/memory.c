@@ -28,6 +28,10 @@ efi_memtype_conv (
         return BOOT_MEMORY_USABLE;
     case EfiUnusableMemory:
         return BOOT_MEMORY_BAD;
+    case EfiLoaderData:
+        return BOOT_MEMORY_LOADER;
+    case EfiACPIMemoryNVS:
+        return BOOT_MEMORY_ACPI_NVS;
     default:
         return BOOT_MEMORY_RESERVED;
     }
